@@ -1,0 +1,27 @@
+{
+  "name": "multi-agent_research-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@langchain/community": "^1.1.28",
+    "@langchain/core": "^1.1.48",
+    "@langchain/groq": "^1.2.1",
+    "@langchain/tavily": "^1.2.0",
+    "axios": "^1.16.1",
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.4.2",
+    "groq-sdk": "^1.2.0",
+    "langchain": "^1.4.2",
+    "puppeteer": "^25.0.4",
+    "tavily": "^2.0.0",
+    "zod": "^4.4.3"
+  }
+}

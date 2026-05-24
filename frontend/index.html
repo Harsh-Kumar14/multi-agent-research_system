@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ResearchMind · AI Research Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --orange: #ff8c32;
+    --orange-deep: #ff5a1a;
+    --green: #50c878;
+    --bg: #0a0a0f;
+    --text: #e8e4dc;
+    --text-muted: #a09890;
+    --text-dim: #605850;
+    --surface: rgba(255,255,255,0.03);
+    --border: rgba(255,255,255,0.07);
+    --border-orange: rgba(255,140,50,0.2);
+    --border-green: rgba(80,200,120,0.2);
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255,140,50,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 110%, rgba(255,80,30,0.08) 0%, transparent 55%);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 3rem 5rem;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 3.5rem 0 2.5rem;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 1rem;
+    opacity: 0.9;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: #f0ebe0;
+    margin-bottom: 1rem;
+  }
+  .hero h1 span { color: var(--orange); }
+  .hero-sub {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: var(--text-muted);
+    max-width: 520px;
+    margin: 0 auto;
+    line-height: 1.65;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,140,50,0.3), transparent);
+    margin: 2rem 0;
+  }
+
+  /* ── Main grid ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 5fr 4fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  /* ── Input card ── */
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border-orange);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(8px);
+  }
+  .input-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--orange);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  .input-card input[type="text"] {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,140,50,0.25);
+    border-radius: 10px;
+    color: #f0ebe0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    margin-bottom: 1.2rem;
+  }
+  .input-card input[type="text"]:focus {
+    border-color: var(--orange);
+    box-shadow: 0 0 0 3px rgba(255,140,50,0.12);
+  }
+  .input-card input::placeholder { color: #4a4540; }
+
+  .run-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+    color: var(--bg);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 2rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+    box-shadow: 0 4px 20px rgba(255,140,50,0.3);
+  }
+  .run-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255,140,50,0.4);
+    opacity: 0.95;
+  }
+  .run-btn:active { transform: translateY(0); }
+  .run-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── Examples ── */
+  .examples {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 1rem;
+  }
+  .examples-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+  }
+  .chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .chip:hover {
+    border-color: rgba(255,140,50,0.3);
+    color: var(--orange);
+  }
+
+  /* ── Pipeline ── */
+  .section-heading {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #f0ebe0;
+    margin: 0 0 1rem;
+  }
+
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.4rem 1.6rem;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .step-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: 14px 0 0 14px;
+    background: rgba(255,255,255,0.05);
+    transition: background 0.3s;
+  }
+  .step-card.active {
+    border-color: rgba(255,140,50,0.4);
+    background: rgba(255,140,50,0.04);
+  }
+  .step-card.active::before { background: var(--orange); }
+  .step-card.done {
+    border-color: rgba(80,200,120,0.3);
+    background: rgba(80,200,120,0.03);
+  }
+  .step-card.done::before { background: var(--green); }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--orange);
+    opacity: 0.7;
+  }
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #f0ebe0;
+    flex: 1;
+  }
+  .step-status {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+  }
+  .status-waiting { color: #555; }
+  .status-running { color: var(--orange); }
+  .status-done    { color: var(--green); }
+  .step-desc {
+    font-size: 0.82rem;
+    color: #706860;
+    margin-top: 0.35rem;
+  }
+
+  /* ── Spinner ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner {
+    display: inline-block;
+    width: 14px; height: 14px;
+    border: 2px solid rgba(255,140,50,0.2);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+
+  /* ── Results ── */
+  .results-section { margin-top: 2rem; }
+
+  .expander {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+  }
+  .expander-toggle {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-align: left;
+    transition: color 0.2s;
+  }
+  .expander-toggle:hover { color: var(--text); }
+  .expander-toggle .arrow {
+    transition: transform 0.25s;
+    font-size: 0.6rem;
+  }
+  .expander-toggle.open .arrow { transform: rotate(180deg); }
+  .expander-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .expander-body.open { max-height: 800px; }
+  .expander-inner {
+    padding: 0 1.5rem 1.5rem;
+    font-size: 0.88rem;
+    color: #cdc8bf;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    font-family: 'DM Sans', sans-serif;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+  }
+  .expander-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-orange);
+  }
+
+  .report-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-orange);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .feedback-panel {
+    background: var(--surface);
+    border: 1px solid var(--border-green);
+    border-radius: 16px;
+    padding: 2rem 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .panel-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.7rem;
+  }
+  .panel-label.orange {
+    color: var(--orange);
+    border-bottom: 1px solid var(--border-orange);
+  }
+  .panel-label.green {
+    color: var(--green);
+    border-bottom: 1px solid var(--border-green);
+  }
+  .report-content {
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: #cdc8bf;
+    white-space: pre-wrap;
+  }
+  .report-content h1, .report-content h2, .report-content h3 {
+    font-family: 'Syne', sans-serif;
+    color: #f0ebe0;
+    margin: 1.2rem 0 0.5rem;
+  }
+
+  .download-btn {
+    background: rgba(255,140,50,0.08);
+    border: 1px solid var(--border-orange);
+    border-radius: 10px;
+    color: var(--orange);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    margin-top: 1.2rem;
+    display: inline-block;
+    text-decoration: none;
+  }
+  .download-btn:hover {
+    background: rgba(255,140,50,0.14);
+    box-shadow: 0 0 0 1px rgba(255,140,50,0.3);
+  }
+
+  /* ── Warning ── */
+  .warning {
+    background: rgba(255,140,50,0.08);
+    border: 1px solid rgba(255,140,50,0.3);
+    border-radius: 10px;
+    padding: 0.75rem 1.2rem;
+    font-size: 0.85rem;
+    color: var(--orange);
+    margin-bottom: 1rem;
+    display: none;
+  }
+  .warning.show { display: block; }
+
+  /* ── Footer ── */
+  .notice {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+    margin-top: 3rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── Progress pulse animation ── */
+  @keyframes pulse-border {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+  }
+  .step-card.active { animation: pulse-border 2s ease-in-out infinite; }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .container { padding: 1.5rem 1.2rem 3rem; }
+    .main-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Multi-Agent AI System</div>
+    <h1>Research<span>Mind</span></h1>
+    <p class="hero-sub">
+      Four specialized AI agents collaborate — searching, scraping, writing,
+      and critiquing — to deliver a polished research report on any topic.
+    </p>
+  </div>
+  <div class="divider"></div>
+
+  <!-- Main grid -->
+  <div class="main-grid">
+
+    <!-- Left: Input -->
+    <div>
+      <div class="input-card">
+        <label class="input-label" for="topic">Research Topic</label>
+        <input type="text" id="topic" placeholder="e.g. Quantum computing breakthroughs in 2025" autocomplete="off" />
+        <div id="warning" class="warning">⚠ Please enter a research topic first.</div>
+        <button class="run-btn" id="runBtn" onclick="runPipeline()">⚡ Run Research Pipeline</button>
+      </div>
+
+      <div class="examples">
+        <span class="examples-label">TRY →</span>
+        <span class="chip" onclick="fillExample('LLM agents 2025')">LLM agents 2025</span>
+        <span class="chip" onclick="fillExample('CRISPR gene editing')">CRISPR gene editing</span>
+        <span class="chip" onclick="fillExample('Fusion energy progress')">Fusion energy progress</span>
+      </div>
+    </div>
+
+    <!-- Right: Pipeline -->
+    <div>
+      <div class="section-heading">Pipeline</div>
+      <div id="step-search"  class="step-card">
+        <div class="step-header">
+          <span class="step-num">01</span>
+          <span class="step-title">Search Agent</span>
+          <span class="step-status status-waiting" id="status-search">WAITING</span>
+        </div>
+        <div class="step-desc">Gathers recent web information</div>
+      </div>
+      <div id="step-reader" class="step-card">
+        <div class="step-header">
+          <span class="step-num">02</span>
+          <span class="step-title">Reader Agent</span>
+          <span class="step-status status-waiting" id="status-reader">WAITING</span>
+        </div>
+        <div class="step-desc">Scrapes &amp; extracts deep content</div>
+      </div>
+      <div id="step-writer" class="step-card">
+        <div class="step-header">
+          <span class="step-num">03</span>
+          <span class="step-title">Writer Chain</span>
+          <span class="step-status status-waiting" id="status-writer">WAITING</span>
+        </div>
+        <div class="step-desc">Drafts the full research report</div>
+      </div>
+      <div id="step-critic" class="step-card">
+        <div class="step-header">
+          <span class="step-num">04</span>
+          <span class="step-title">Critic Chain</span>
+          <span class="step-status status-waiting" id="status-critic">WAITING</span>
+        </div>
+        <div class="step-desc">Reviews &amp; scores the report</div>
+      </div>
+    </div>
+
+  </div><!-- /main-grid -->
+
+  <!-- Results -->
+  <div id="results" class="results-section" style="display:none;">
+    <div class="divider"></div>
+    <div class="section-heading">Results</div>
+
+    <!-- Search expander -->
+    <div class="expander" id="expander-search" style="display:none;">
+      <button class="expander-toggle" onclick="toggleExpander(this)">
+        🔍 Search Results (raw) <span class="arrow">▼</span>
+      </button>
+      <div class="expander-body">
+        <div class="expander-inner">
+          <div class="expander-label">Search Agent Output</div>
+          <div id="search-output"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reader expander -->
+    <div class="expander" id="expander-reader" style="display:none;">
+      <button class="expander-toggle" onclick="toggleExpander(this)">
+        📄 Scraped Content (raw) <span class="arrow">▼</span>
+      </button>
+      <div class="expander-body">
+        <div class="expander-inner">
+          <div class="expander-label">Reader Agent Output</div>
+          <div id="reader-output"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report -->
+    <div class="report-panel" id="report-panel" style="display:none;">
+      <div class="panel-label orange">📝 Final Research Report</div>
+      <div class="report-content" id="writer-output"></div>
+      <a class="download-btn" id="download-btn" href="#">⬇ Download Report (.md)</a>
+    </div>
+
+    <!-- Critic -->
+    <div class="feedback-panel" id="feedback-panel" style="display:none;">
+      <div class="panel-label green">🧐 Critic Feedback</div>
+      <div class="report-content" id="critic-output"></div>
+    </div>
+  </div>
+
+  <div class="notice">ResearchMind · Powered by LangChain multi-agent pipeline · Built with HTML/CSS/JS</div>
+</div>
+
+<script>
+  // ── Helpers ──────────────────────────────────────────────────────────────
+  function fillExample(text) {
+    document.getElementById('topic').value = text;
+    document.getElementById('topic').focus();
+  }
+
+  function toggleExpander(btn) {
+    btn.classList.toggle('open');
+    const body = btn.nextElementSibling;
+    body.classList.toggle('open');
+  }
+
+  function setStep(step, state) {
+    const card   = document.getElementById('step-' + step);
+    const status = document.getElementById('status-' + step);
+    card.className = 'step-card' + (state === 'active' ? ' active' : state === 'done' ? ' done' : '');
+    if (state === 'active') {
+      status.className = 'step-status status-running';
+      status.innerHTML = '<span class="spinner"></span> RUNNING';
+    } else if (state === 'done') {
+      status.className = 'step-status status-done';
+      status.textContent = '✓ DONE';
+    } else {
+      status.className = 'step-status status-waiting';
+      status.textContent = 'WAITING';
+    }
+  }
+
+  function resetPipeline() {
+    ['search','reader','writer','critic'].forEach(s => setStep(s, 'idle'));
+    document.getElementById('results').style.display = 'none';
+    ['expander-search','expander-reader','report-panel','feedback-panel'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  // ── Simulated pipeline (replace with real API calls) ─────────────────────
+//   async function runPipeline() {
+//     const topic = document.getElementById('topic').value.trim();
+//     const warn  = document.getElementById('warning');
+
+//     if (!topic) { warn.classList.add('show'); return; }
+//     warn.classList.remove('show');
+
+//     const btn = document.getElementById('runBtn');
+//     btn.disabled = true;
+//     btn.textContent = '⏳ Running…';
+//     resetPipeline();
+
+//     // ── Step 1: Search ──
+//     setStep('search', 'active');
+//     await sleep(1800);
+//     const searchResult = `Search results for "${topic}":\n\n• Found 10 recent articles from Nature, arXiv, and TechCrunch.\n• Key themes: recent breakthroughs, industry adoption, research challenges.\n• Top sources: nature.com, arxiv.org, techcrunch.com\n• Latest publications date from the past 3 months.\n• Notable researchers: several leading labs worldwide.`;
+//     setStep('search', 'done');
+//     document.getElementById('search-output').textContent = searchResult;
+//     document.getElementById('expander-search').style.display = '';
+
+//     // ── Step 2: Reader ──
+//     setStep('reader', 'active');
+//     await sleep(2000);
+//     const readerResult = `Scraped content from top URL:\n\nTitle: "${topic} — A Comprehensive Overview"\n\nAbstract: This article examines the latest advances...\n\nKey Findings:\n1. Significant progress has been made in core methodologies.\n2. Industry adoption rates have grown by 40% year-over-year.\n3. Open challenges remain in scalability and safety.\n4. Major research institutions are collaborating globally.\n\nConclusion: The field is advancing rapidly with broad implications.`;
+//     setStep('reader', 'done');
+//     document.getElementById('reader-output').textContent = readerResult;
+//     document.getElementById('expander-reader').style.display = '';
+
+//     // ── Step 3: Writer ──
+//     setStep('writer', 'active');
+//     await sleep(2200);
+//     const writerResult = `# Research Report: ${topic}
+
+// ## Executive Summary
+// This report synthesizes the latest findings on **${topic}**, drawing from recent publications, industry analyses, and expert commentary.
+
+// ## Key Developments
+// Recent years have seen remarkable progress in this area. Leading research institutions have published groundbreaking results that challenge previous assumptions and open new avenues for exploration.
+
+// ## Current State of the Field
+// The field is characterized by rapid iteration and cross-disciplinary collaboration. Several major milestones have been achieved:
+
+// - **Milestone 1**: Significant methodological improvements reducing error rates by over 30%.
+// - **Milestone 2**: Real-world deployments demonstrating scalability at unprecedented levels.
+// - **Milestone 3**: Open-source contributions accelerating community-driven innovation.
+
+// ## Challenges & Open Questions
+// Despite progress, important challenges remain:
+// 1. Scalability at production scale
+// 2. Interpretability and transparency
+// 3. Ethical implications and governance frameworks
+
+// ## Outlook
+// The next 12–24 months are expected to bring further breakthroughs. Investment in this area continues to grow, and interdisciplinary research is yielding novel approaches that were unimaginable just a few years ago.
+
+// ## Conclusion
+// **${topic}** stands at an exciting inflection point. The confluence of improved tooling, increased funding, and global collaboration suggests that major advances are imminent.
+
+// ---
+// *Report generated by ResearchMind Multi-Agent System*`;
+//     setStep('writer', 'done');
+//     document.getElementById('writer-output').textContent = writerResult;
+//     document.getElementById('report-panel').style.display = '';
+
+//     // Setup download
+//     const blob = new Blob([writerResult], { type: 'text/markdown' });
+//     const url  = URL.createObjectURL(blob);
+//     const dl   = document.getElementById('download-btn');
+//     dl.href     = url;
+//     dl.download = `research_report_${Date.now()}.md`;
+
+//     // ── Step 4: Critic ──
+//     setStep('critic', 'active');
+//     await sleep(1600);
+//     const criticResult = `## Critic Review
+
+// **Overall Score: 8.2 / 10** ⭐⭐⭐⭐
+
+// ### Strengths
+// ✅ Comprehensive coverage of the topic with clear structure  
+// ✅ Well-balanced analysis covering both achievements and challenges  
+// ✅ Executive summary effectively captures the key points  
+// ✅ Forward-looking outlook is grounded in current evidence
+
+// ### Areas for Improvement
+// ⚠ Some sections could benefit from more specific data citations  
+// ⚠ The methodology section could be expanded with technical details  
+// ⚠ Regional perspectives (Asia, Europe) are underrepresented
+
+// ### Recommendation
+// The report is publication-ready with minor revisions. Suggest adding 2–3 specific case studies to strengthen the empirical grounding. The executive summary is particularly strong and could be used standalone as a briefing document.`;
+//     setStep('critic', 'done');
+//     document.getElementById('critic-output').textContent = criticResult;
+//     document.getElementById('feedback-panel').style.display = '';
+
+//     // Show results section
+//     document.getElementById('results').style.display = '';
+//     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+//     btn.disabled  = false;
+//     btn.textContent = '⚡ Run Research Pipeline';
+//   }
+async function runPipeline() {
+
+  const topic =
+    document.getElementById("topic").value.trim();
+
+  const warn =
+    document.getElementById("warning");
+
+  if (!topic) {
+
+    warn.classList.add("show");
+
+    return;
+  }
+
+  warn.classList.remove("show");
+
+  const btn =
+    document.getElementById("runBtn");
+
+  btn.disabled = true;
+
+  btn.textContent = "⏳ Running…";
+
+  resetPipeline();
+
+
+  try {
+
+    // -----------------------------------------
+    // STEP 1
+    // -----------------------------------------
+
+    setStep("search", "active");
+
+
+    const response = await fetch(
+      "http://localhost:3000/research",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify({
+          topic,
+        }),
+      }
+    );
+
+
+    const data = await response.json();
+
+    console.log(data);
+
+
+    // -----------------------------------------
+    // SEARCH RESULTS
+    // -----------------------------------------
+
+    setStep("search", "done");
+
+    document.getElementById(
+      "search-output"
+    ).textContent =
+      data.search_results || "No search results";
+
+    document.getElementById(
+      "expander-search"
+    ).style.display = "";
+
+
+    // -----------------------------------------
+    // READER
+    // -----------------------------------------
+
+    setStep("reader", "active");
+
+    await sleep(500);
+
+    setStep("reader", "done");
+
+    document.getElementById(
+      "reader-output"
+    ).textContent =
+      data.scraped_content || "No scraped content";
+
+    document.getElementById(
+      "expander-reader"
+    ).style.display = "";
+
+
+    // -----------------------------------------
+    // WRITER
+    // -----------------------------------------
+
+    setStep("writer", "active");
+
+    await sleep(500);
+
+    setStep("writer", "done");
+
+    document.getElementById(
+      "writer-output"
+    ).textContent =
+      data.report || "No report generated";
+
+    document.getElementById(
+      "report-panel"
+    ).style.display = "";
+
+
+    // DOWNLOAD BUTTON
+
+    const blob = new Blob(
+      [data.report],
+      {
+        type: "text/markdown",
+      }
+    );
+
+    const url =
+      URL.createObjectURL(blob);
+
+    const dl =
+      document.getElementById(
+        "download-btn"
+      );
+
+    dl.href = url;
+
+    dl.download =
+      `research_report_${Date.now()}.md`;
+
+
+    // -----------------------------------------
+    // CRITIC
+    // -----------------------------------------
+
+    setStep("critic", "active");
+
+    await sleep(500);
+
+    setStep("critic", "done");
+
+    document.getElementById(
+      "critic-output"
+    ).textContent =
+      data.feedback || "No feedback";
+
+    document.getElementById(
+      "feedback-panel"
+    ).style.display = "";
+
+
+    // -----------------------------------------
+    // SHOW RESULTS
+    // -----------------------------------------
+
+    document.getElementById(
+      "results"
+    ).style.display = "";
+
+
+    document.getElementById(
+      "results"
+    ).scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Backend connection failed"
+    );
+
+  } finally {
+
+    btn.disabled = false;
+
+    btn.textContent =
+      "⚡ Run Research Pipeline";
+  }
+}
+</script>
+</body>
+</html>
