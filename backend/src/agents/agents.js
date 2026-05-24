@@ -12,58 +12,21 @@ import { web_search, scrape_url } from "../tools/tools.js";
 
 dotenv.config();
 
-
-// --------------------------------------
-// MODEL SETUP
-// --------------------------------------
-
-const llm = new ChatGroq({
-  model: "llama-3.3-70b-versatile",
-  temperature: 0,
-});
-
-
-// --------------------------------------
-// SEARCH AGENT
-// --------------------------------------
+const llm = new ChatGroq({ model: "llama-3.3-70b-versatile", temperature: 0 });
 
 export function build_search_agent() {
-
-  return createAgent({
-
-    model: llm,
-
-    tools: [web_search],
-  });
+  return createAgent({ model: llm, tools: [web_search] });
 }
-
-
-// --------------------------------------
-// READER AGENT
-// --------------------------------------
 
 export function build_reader_agent() {
-
-  return createAgent({
-
-    model: llm,
-
-    tools: [scrape_url],
-  });
+  return createAgent({ model: llm, tools: [scrape_url] });
 }
 
-
-// --------------------------------------
-// WRITER CHAIN
-// --------------------------------------
-
 const writer_prompt = ChatPromptTemplate.fromMessages([
-
   [
     "system",
     "You are an expert research writer. Write clear, structured and insightful reports.",
   ],
-
   [
     "human",
     `Write a detailed research report on the topic below.
@@ -83,24 +46,13 @@ Be detailed, factual and professional.`,
   ],
 ]);
 
-
-export const writer_chain =
-  writer_prompt
-    .pipe(llm)
-    .pipe(new StringOutputParser());
-
-
-// --------------------------------------
-// CRITIC CHAIN
-// --------------------------------------
+export const writer_chain = writer_prompt.pipe(llm).pipe(new StringOutputParser());
 
 const critic_prompt = ChatPromptTemplate.fromMessages([
-
   [
     "system",
     "You are a sharp and constructive research critic. Be honest and specific.",
   ],
-
   [
     "human",
     `Review the research report below and evaluate it strictly.
@@ -125,8 +77,4 @@ One line verdict:
   ],
 ]);
 
-
-export const critic_chain =
-  critic_prompt
-    .pipe(llm)
-    .pipe(new StringOutputParser());
+export const critic_chain = critic_prompt.pipe(llm).pipe(new StringOutputParser());

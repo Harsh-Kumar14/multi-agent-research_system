@@ -42,7 +42,6 @@
     padding: 2rem 3rem 5rem;
   }
 
-  /* ── Hero ── */
   .hero {
     text-align: center;
     padding: 3.5rem 0 2.5rem;
@@ -82,7 +81,6 @@
     margin: 2rem 0;
   }
 
-  /* ── Main grid ── */
   .main-grid {
     display: grid;
     grid-template-columns: 5fr 4fr;
@@ -90,7 +88,6 @@
     align-items: start;
   }
 
-  /* ── Input card ── */
   .input-card {
     background: var(--surface);
     border: 1px solid var(--border-orange);
@@ -155,7 +152,6 @@
     transform: none;
   }
 
-  /* ── Examples ── */
   .examples {
     display: flex;
     gap: 0.5rem;
@@ -185,7 +181,6 @@
     color: var(--orange);
   }
 
-  /* ── Pipeline ── */
   .section-heading {
     font-family: 'Syne', sans-serif;
     font-size: 1.3rem;
@@ -258,7 +253,6 @@
     margin-top: 0.35rem;
   }
 
-  /* ── Spinner ── */
   @keyframes spin { to { transform: rotate(360deg); } }
   .spinner {
     display: inline-block;
@@ -271,7 +265,6 @@
     margin-right: 4px;
   }
 
-  /* ── Results ── */
   .results-section { margin-top: 2rem; }
 
   .expander {
@@ -392,7 +385,6 @@
     box-shadow: 0 0 0 1px rgba(255,140,50,0.3);
   }
 
-  /* ── Warning ── */
   .warning {
     background: rgba(255,140,50,0.08);
     border: 1px solid rgba(255,140,50,0.3);
@@ -405,7 +397,6 @@
   }
   .warning.show { display: block; }
 
-  /* ── Footer ── */
   .notice {
     font-family: 'DM Mono', monospace;
     font-size: 0.72rem;
@@ -415,14 +406,12 @@
     letter-spacing: 0.08em;
   }
 
-  /* ── Progress pulse animation ── */
   @keyframes pulse-border {
     0%, 100% { opacity: 1; }
     50%       { opacity: 0.5; }
   }
   .step-card.active { animation: pulse-border 2s ease-in-out infinite; }
 
-  /* ── Responsive ── */
   @media (max-width: 768px) {
     .container { padding: 1.5rem 1.2rem 3rem; }
     .main-grid { grid-template-columns: 1fr; }
@@ -432,7 +421,6 @@
 <body>
 <div class="container">
 
-  <!-- Hero -->
   <div class="hero">
     <div class="hero-eyebrow">Multi-Agent AI System</div>
     <h1>Research<span>Mind</span></h1>
@@ -443,10 +431,8 @@
   </div>
   <div class="divider"></div>
 
-  <!-- Main grid -->
   <div class="main-grid">
 
-    <!-- Left: Input -->
     <div>
       <div class="input-card">
         <label class="input-label" for="topic">Research Topic</label>
@@ -463,7 +449,6 @@
       </div>
     </div>
 
-    <!-- Right: Pipeline -->
     <div>
       <div class="section-heading">Pipeline</div>
       <div id="step-search"  class="step-card">
@@ -500,14 +485,12 @@
       </div>
     </div>
 
-  </div><!-- /main-grid -->
+  </div>
 
-  <!-- Results -->
   <div id="results" class="results-section" style="display:none;">
     <div class="divider"></div>
     <div class="section-heading">Results</div>
 
-    <!-- Search expander -->
     <div class="expander" id="expander-search" style="display:none;">
       <button class="expander-toggle" onclick="toggleExpander(this)">
         🔍 Search Results (raw) <span class="arrow">▼</span>
@@ -520,7 +503,6 @@
       </div>
     </div>
 
-    <!-- Reader expander -->
     <div class="expander" id="expander-reader" style="display:none;">
       <button class="expander-toggle" onclick="toggleExpander(this)">
         📄 Scraped Content (raw) <span class="arrow">▼</span>
@@ -533,14 +515,12 @@
       </div>
     </div>
 
-    <!-- Report -->
     <div class="report-panel" id="report-panel" style="display:none;">
       <div class="panel-label orange">📝 Final Research Report</div>
       <div class="report-content" id="writer-output"></div>
       <a class="download-btn" id="download-btn" href="#">⬇ Download Report (.md)</a>
     </div>
 
-    <!-- Critic -->
     <div class="feedback-panel" id="feedback-panel" style="display:none;">
       <div class="panel-label green">🧐 Critic Feedback</div>
       <div class="report-content" id="critic-output"></div>
@@ -551,7 +531,6 @@
 </div>
 
 <script>
-  // ── Helpers ──────────────────────────────────────────────────────────────
   function fillExample(text) {
     document.getElementById('topic').value = text;
     document.getElementById('topic').focus();
@@ -589,112 +568,8 @@
 
   function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-  // ── Simulated pipeline (replace with real API calls) ─────────────────────
-//   async function runPipeline() {
-//     const topic = document.getElementById('topic').value.trim();
-//     const warn  = document.getElementById('warning');
-
-//     if (!topic) { warn.classList.add('show'); return; }
-//     warn.classList.remove('show');
-
-//     const btn = document.getElementById('runBtn');
-//     btn.disabled = true;
-//     btn.textContent = '⏳ Running…';
-//     resetPipeline();
-
-//     // ── Step 1: Search ──
-//     setStep('search', 'active');
-//     await sleep(1800);
-//     const searchResult = `Search results for "${topic}":\n\n• Found 10 recent articles from Nature, arXiv, and TechCrunch.\n• Key themes: recent breakthroughs, industry adoption, research challenges.\n• Top sources: nature.com, arxiv.org, techcrunch.com\n• Latest publications date from the past 3 months.\n• Notable researchers: several leading labs worldwide.`;
-//     setStep('search', 'done');
-//     document.getElementById('search-output').textContent = searchResult;
-//     document.getElementById('expander-search').style.display = '';
-
-//     // ── Step 2: Reader ──
-//     setStep('reader', 'active');
-//     await sleep(2000);
-//     const readerResult = `Scraped content from top URL:\n\nTitle: "${topic} — A Comprehensive Overview"\n\nAbstract: This article examines the latest advances...\n\nKey Findings:\n1. Significant progress has been made in core methodologies.\n2. Industry adoption rates have grown by 40% year-over-year.\n3. Open challenges remain in scalability and safety.\n4. Major research institutions are collaborating globally.\n\nConclusion: The field is advancing rapidly with broad implications.`;
-//     setStep('reader', 'done');
-//     document.getElementById('reader-output').textContent = readerResult;
-//     document.getElementById('expander-reader').style.display = '';
-
-//     // ── Step 3: Writer ──
-//     setStep('writer', 'active');
-//     await sleep(2200);
-//     const writerResult = `# Research Report: ${topic}
-
-// ## Executive Summary
-// This report synthesizes the latest findings on **${topic}**, drawing from recent publications, industry analyses, and expert commentary.
-
-// ## Key Developments
-// Recent years have seen remarkable progress in this area. Leading research institutions have published groundbreaking results that challenge previous assumptions and open new avenues for exploration.
-
-// ## Current State of the Field
-// The field is characterized by rapid iteration and cross-disciplinary collaboration. Several major milestones have been achieved:
-
-// - **Milestone 1**: Significant methodological improvements reducing error rates by over 30%.
-// - **Milestone 2**: Real-world deployments demonstrating scalability at unprecedented levels.
-// - **Milestone 3**: Open-source contributions accelerating community-driven innovation.
-
-// ## Challenges & Open Questions
-// Despite progress, important challenges remain:
-// 1. Scalability at production scale
-// 2. Interpretability and transparency
-// 3. Ethical implications and governance frameworks
-
-// ## Outlook
-// The next 12–24 months are expected to bring further breakthroughs. Investment in this area continues to grow, and interdisciplinary research is yielding novel approaches that were unimaginable just a few years ago.
-
-// ## Conclusion
-// **${topic}** stands at an exciting inflection point. The confluence of improved tooling, increased funding, and global collaboration suggests that major advances are imminent.
-
-// ---
-// *Report generated by ResearchMind Multi-Agent System*`;
-//     setStep('writer', 'done');
-//     document.getElementById('writer-output').textContent = writerResult;
-//     document.getElementById('report-panel').style.display = '';
-
-//     // Setup download
-//     const blob = new Blob([writerResult], { type: 'text/markdown' });
-//     const url  = URL.createObjectURL(blob);
-//     const dl   = document.getElementById('download-btn');
-//     dl.href     = url;
-//     dl.download = `research_report_${Date.now()}.md`;
-
-//     // ── Step 4: Critic ──
-//     setStep('critic', 'active');
-//     await sleep(1600);
-//     const criticResult = `## Critic Review
-
-// **Overall Score: 8.2 / 10** ⭐⭐⭐⭐
-
-// ### Strengths
-// ✅ Comprehensive coverage of the topic with clear structure  
-// ✅ Well-balanced analysis covering both achievements and challenges  
-// ✅ Executive summary effectively captures the key points  
-// ✅ Forward-looking outlook is grounded in current evidence
-
-// ### Areas for Improvement
-// ⚠ Some sections could benefit from more specific data citations  
-// ⚠ The methodology section could be expanded with technical details  
-// ⚠ Regional perspectives (Asia, Europe) are underrepresented
-
-// ### Recommendation
-// The report is publication-ready with minor revisions. Suggest adding 2–3 specific case studies to strengthen the empirical grounding. The executive summary is particularly strong and could be used standalone as a briefing document.`;
-//     setStep('critic', 'done');
-//     document.getElementById('critic-output').textContent = criticResult;
-//     document.getElementById('feedback-panel').style.display = '';
-
-//     // Show results section
-//     document.getElementById('results').style.display = '';
-//     document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-//     btn.disabled  = false;
-//     btn.textContent = '⚡ Run Research Pipeline';
-//   }
-async function runPipeline() {
-
-  const topic =
+  async function runPipeline() {
+    const topic =
     document.getElementById("topic").value.trim();
 
   const warn =
@@ -720,11 +595,6 @@ async function runPipeline() {
 
 
   try {
-
-    // -----------------------------------------
-    // STEP 1
-    // -----------------------------------------
-
     setStep("search", "active");
 
 
@@ -747,12 +617,6 @@ async function runPipeline() {
     const data = await response.json();
 
     console.log(data);
-
-
-    // -----------------------------------------
-    // SEARCH RESULTS
-    // -----------------------------------------
-
     setStep("search", "done");
 
     document.getElementById(
@@ -785,10 +649,6 @@ async function runPipeline() {
     ).style.display = "";
 
 
-    // -----------------------------------------
-    // WRITER
-    // -----------------------------------------
-
     setStep("writer", "active");
 
     await sleep(500);
@@ -804,9 +664,7 @@ async function runPipeline() {
       "report-panel"
     ).style.display = "";
 
-
     // DOWNLOAD BUTTON
-
     const blob = new Blob(
       [data.report],
       {
@@ -827,11 +685,6 @@ async function runPipeline() {
     dl.download =
       `research_report_${Date.now()}.md`;
 
-
-    // -----------------------------------------
-    // CRITIC
-    // -----------------------------------------
-
     setStep("critic", "active");
 
     await sleep(500);
@@ -843,42 +696,15 @@ async function runPipeline() {
     ).textContent =
       data.feedback || "No feedback";
 
-    document.getElementById(
-      "feedback-panel"
-    ).style.display = "";
-
-
-    // -----------------------------------------
-    // SHOW RESULTS
-    // -----------------------------------------
-
-    document.getElementById(
-      "results"
-    ).style.display = "";
-
-
-    document.getElementById(
-      "results"
-    ).scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-
+    document.getElementById("feedback-panel").style.display = "";
+    document.getElementById("results").style.display = "";
+    document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) {
-
     console.error(error);
-
-    alert(
-      "Backend connection failed"
-    );
-
+    alert("Backend connection failed");
   } finally {
-
     btn.disabled = false;
-
-    btn.textContent =
-      "⚡ Run Research Pipeline";
+    btn.textContent = "⚡ Run Research Pipeline";
   }
 }
 </script>
