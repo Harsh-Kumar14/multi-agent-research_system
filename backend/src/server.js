@@ -8,7 +8,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({origin:"multi-agent-research-system.netlify.app"}));
+app.use(cors({origin:"https://multi-agent-research-system.netlify.app"}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
