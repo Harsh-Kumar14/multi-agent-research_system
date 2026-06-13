@@ -13,6 +13,7 @@
   "type": "module",
   "dependencies": {
     "@langchain/core": "^1.1.48",
+    "@langchain/groq": "^1.2.1",
     "axios": "^1.16.1",
     "cheerio": "^1.2.0",
     "cors": "^2.8.6",
